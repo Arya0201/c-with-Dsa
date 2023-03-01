@@ -1,0 +1,58 @@
+Question : check cycle detection in directed graph 
+Problem Statement
+you are given n nodes. and also given edges.
+Sample Input 1 :
+5
+6
+1 2
+4 1
+2 4
+3 4
+5 2
+1 3
+Sample Output 1 :
+true
+
+code:
+
+#include<bits/stdc++.h>
+bool dfsCycleDetection( unordered_map<int,bool> &visited,  unordered_map<int,bool> &dfsVisited,unordered_map<int,list<int>> &adj, int node){
+   
+   visited[node]=1;
+   dfsVisited[node]=1;
+   
+   for(auto neighbour: adj[node]){
+       if(!visited[neighbour]){
+           bool isCycleFound=dfsCycleDetection(visited,dfsVisited,adj,neighbour);
+               if(isCycleFound)
+                   return true;
+       }
+       else if (dfsVisited[neighbour])
+           return true;
+   }
+   dfsVisited[node]=false;
+   return false;
+}
+//main given function
+int detectCycleInDirectedGraph(int n, vector < pair < int, int >> & edges) {
+ // Write your code here.
+ unordered_map<int,list<int>> adj;
+ 
+ for(int i=0;i<edges.size();i++){
+ int u=edges[i].first;
+ int v=edges[i].second;
+ adj[u].push_back(v);
+ }
+ 
+   unordered_map<int,bool> visited;
+   unordered_map<int,bool> dfsVisited;
+   
+ for(int i=0;i<n;i++){
+ if(!visited[i]){
+ bool ans=dfsCycleDetection(visited, dfsVisited,adj,i);
+ if(ans==true)
+ return true;
+ }
+ }
+ return false;
+}
